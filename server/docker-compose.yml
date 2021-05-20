@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  nodejs:
+    image: daraburst/simple-crud-docker/server
+    restart: on-failure
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - "3001:3001"
+    security_opt:
+      - seccomp:unconfined
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: on-failure
+    ports:
+      - "33000:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
